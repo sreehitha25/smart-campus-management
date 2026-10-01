@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Smart Campus Management</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="login" class="login hidden">
+    <form id="login-form" class="login-box">
+        <h1>Smart Campus</h1>
+        <p class="muted">Sign in to manage students, attendance and marks</p>
+        <div id="login-error" class="form-error hidden"></div>
+        <label class="field"><span>Username</span>
+            <input name="username" autocomplete="username" autofocus></label>
+        <label class="field"><span>Password</span>
+            <input name="password" type="password" autocomplete="current-password"></label>
+        <button class="btn primary wide" type="submit">Sign in</button>
+        <p class="hint">Demo accounts<br>
+            <strong>admin</strong> / admin123 (full access)<br>
+            <strong>faculty</strong> / faculty123 (attendance and marks only)</p>
+    </form>
+</div>
+
+<div id="app" class="hidden">
+    <aside class="sidebar">
+        <div class="brand">Smart Campus</div>
+        <nav id="nav">
+            <a href="#dashboard" data-page="dashboard">Dashboard</a>
+            <a href="#students" data-page="students">Students</a>
+            <a href="#faculty" data-page="faculty">Faculty</a>
+            <a href="#departments" data-page="departments">Departments</a>
+            <a href="#courses" data-page="courses">Courses</a>
+            <a href="#attendance" data-page="attendance">Attendance</a>
+            <a href="#marks" data-page="marks">Marks</a>
+            <a href="#reports" data-page="reports">Reports</a>
+        </nav>
+        <div class="user-box">
+            <div id="user-name" class="user-name"></div>
+            <div id="user-role" class="user-role"></div>
+            <button id="logout" class="btn small" type="button">Sign out</button>
+        </div>
+    </aside>
+
+    <main class="content">
+        <section id="page-dashboard" class="page"></section>
+        <section id="page-students" class="page"></section>
+        <section id="page-faculty" class="page"></section>
+        <section id="page-departments" class="page"></section>
+        <section id="page-courses" class="page"></section>
+        <section id="page-attendance" class="page"></section>
+        <section id="page-marks" class="page"></section>
+        <section id="page-reports" class="page"></section>
+    </main>
+</div>
+
+<div id="modal" class="modal hidden">
+    <div class="modal-box">
+        <h2 id="modal-title"></h2>
+        <form id="modal-form" novalidate></form>
+    </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/crud.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/students.js"></script>
+<script src="js/faculty.js"></script>
+<script src="js/departments.js"></script>
+<script src="js/courses.js"></script>
+<script src="js/attendance.js"></script>
+<script src="js/marks.js"></script>
+<script src="js/reports.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

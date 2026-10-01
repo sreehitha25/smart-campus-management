@@ -1,0 +1,844 @@
+{
+  "info": {
+    "name": "Smart Campus Management",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth (run Login first)",
+      "item": [
+        {
+          "name": "Login as admin",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "username",
+                  "value": "admin"
+                },
+                {
+                  "key": "password",
+                  "value": "admin123"
+                }
+              ]
+            },
+            "description": "Body type: x-www-form-urlencoded. 200 OK and Postman stores the session cookie automatically. Wrong password: 401. Use faculty / faculty123 to test the FACULTY role (write requests to students/faculty/courses/departments return 403)."
+          }
+        },
+        {
+          "name": "Current user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
+            },
+            "description": "200 OK. {\"username\":\"admin\",\"fullName\":\"System Administrator\",\"role\":\"ADMIN\"}. 401 if not logged in."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Departments",
+      "item": [
+        {
+          "name": "Get departments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/departments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "departments"
+              ]
+            },
+            "description": "200 OK. Array of {id, departmentCode, departmentName}."
+          }
+        },
+        {
+          "name": "Create department",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/departments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "departments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"departmentCode\": \"IT\",\n  \"departmentName\": \"Information Technology\"\n}"
+            },
+            "description": "201 Created. Returns the saved department. 409 if the code already exists."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Students",
+      "item": [
+        {
+          "name": "Create student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": \"22CSE110\",\n  \"name\": \"Test Student\",\n  \"email\": \"test.student@college.edu\",\n  \"phone\": \"9876512345\",\n  \"departmentId\": 1,\n  \"year\": 3,\n  \"section\": \"A\",\n  \"dateOfBirth\": \"2004-04-10\"\n}"
+            },
+            "description": "201 Created. Response: {id, studentId, name, email, phone, departmentId, departmentCode, year, section, dateOfBirth}. 400 = validation errors, 409 = duplicate student ID or email."
+          }
+        },
+        {
+          "name": "Get students",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students"
+              ]
+            },
+            "description": "200 OK. Array of students."
+          }
+        },
+        {
+          "name": "Get students (paged, sorted)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/page?page=0&size=5&sortBy=name&direction=asc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "page"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "5"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "name"
+                },
+                {
+                  "key": "direction",
+                  "value": "asc"
+                }
+              ]
+            },
+            "description": "200 OK. {content:[...], page, size, totalElements, totalPages}. Optional: keyword=ravi or department=CSE."
+          }
+        },
+        {
+          "name": "Get student",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "1"
+              ]
+            },
+            "description": "200 OK. 404 {timestamp,status,message,path} if the id does not exist."
+          }
+        },
+        {
+          "name": "Search students by name or ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/search?name=ravi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "ravi"
+                }
+              ]
+            },
+            "description": "200 OK. Matches name or student ID (case-insensitive)."
+          }
+        },
+        {
+          "name": "Search students by department",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/search?department=CSE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "department",
+                  "value": "CSE"
+                }
+              ]
+            },
+            "description": "200 OK."
+          }
+        },
+        {
+          "name": "Update student",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": \"22CSE101\",\n  \"name\": \"Ravi Teja K\",\n  \"email\": \"ravi.teja@college.edu\",\n  \"phone\": \"9876512345\",\n  \"departmentId\": 1,\n  \"year\": 3,\n  \"section\": \"A\",\n  \"dateOfBirth\": \"2004-04-10\"\n}"
+            },
+            "description": "200 OK. Returns the updated student."
+          }
+        },
+        {
+          "name": "Delete student",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/11",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "11"
+              ]
+            },
+            "description": "204 No Content. Also removes that student's attendance and marks."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Faculty",
+      "item": [
+        {
+          "name": "Create faculty",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/faculty",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "faculty"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"facultyId\": \"FAC110\",\n  \"name\": \"Dr. Test Faculty\",\n  \"email\": \"test.faculty@college.edu\",\n  \"departmentId\": 1,\n  \"designation\": \"Assistant Professor\"\n}"
+            },
+            "description": "201 Created. Response includes departmentCode. 409 if faculty ID or email exists."
+          }
+        },
+        {
+          "name": "Get faculty",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/faculty",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "faculty"
+              ]
+            },
+            "description": "200 OK."
+          }
+        },
+        {
+          "name": "Search faculty",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/faculty/search?name=suresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "faculty",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "suresh"
+                }
+              ]
+            },
+            "description": "200 OK."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Courses",
+      "item": [
+        {
+          "name": "Create course",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseCode\": \"CS304\",\n  \"courseName\": \"Computer Networks\",\n  \"credits\": 4,\n  \"semester\": 6,\n  \"departmentId\": 1\n}"
+            },
+            "description": "201 Created. 409 if the course code exists."
+          }
+        },
+        {
+          "name": "Get courses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses"
+              ]
+            },
+            "description": "200 OK."
+          }
+        },
+        {
+          "name": "Search courses by department",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/search?department=CSE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "department",
+                  "value": "CSE"
+                }
+              ]
+            },
+            "description": "200 OK."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Attendance",
+      "item": [
+        {
+          "name": "Mark attendance",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/attendance",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "attendance"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": 1,\n  \"courseId\": 1,\n  \"date\": \"2026-09-28\",\n  \"status\": \"PRESENT\"\n}"
+            },
+            "description": "201 Created. Response: {id, studentId, studentCode, studentName, courseId, courseCode, courseName, date, status}. 409 if already marked for that student, course and date."
+          }
+        },
+        {
+          "name": "Get all attendance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/attendance",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "attendance"
+              ]
+            },
+            "description": "200 OK. Newest first."
+          }
+        },
+        {
+          "name": "Get attendance (paged)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/attendance/page?page=0&size=10&sortBy=attendanceDate&direction=desc&studentId=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "attendance",
+                "page"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "attendanceDate"
+                },
+                {
+                  "key": "direction",
+                  "value": "desc"
+                },
+                {
+                  "key": "studentId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "200 OK. Paged response; studentId is optional."
+          }
+        },
+        {
+          "name": "Get attendance of a student",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/attendance/student/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "attendance",
+                "student",
+                "1"
+              ]
+            },
+            "description": "200 OK. studentId is the numeric database id."
+          }
+        },
+        {
+          "name": "Update attendance",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/attendance/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "attendance",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": 1,\n  \"courseId\": 1,\n  \"date\": \"2026-09-14\",\n  \"status\": \"ABSENT\"\n}"
+            },
+            "description": "200 OK."
+          }
+        },
+        {
+          "name": "Attendance percentage (one course)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/attendance/student/1/course/1/percentage",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "attendance",
+                "student",
+                "1",
+                "course",
+                "1",
+                "percentage"
+              ]
+            },
+            "description": "200 OK. Example: {\"studentId\":1,\"courseId\":1,\"attendancePercentage\":100.0}"
+          }
+        },
+        {
+          "name": "Attendance summary (all courses)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/attendance/student/1/summary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "attendance",
+                "student",
+                "1",
+                "summary"
+              ]
+            },
+            "description": "200 OK. Array of {courseId, courseCode, courseName, totalClasses, presentClasses, absentClasses, percentage}."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Marks",
+      "item": [
+        {
+          "name": "Add marks",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/marks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "marks"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": 1,\n  \"courseId\": 3,\n  \"internalMarks\": 35,\n  \"externalMarks\": 52\n}"
+            },
+            "description": "201 Created. totalMarks = 87 and grade = A are calculated by the server. 409 if marks already exist for the student and course."
+          }
+        },
+        {
+          "name": "Get marks of a student",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/marks/student/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "marks",
+                "student",
+                "1"
+              ]
+            },
+            "description": "200 OK."
+          }
+        },
+        {
+          "name": "Get all marks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/marks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "marks"
+              ]
+            },
+            "description": "200 OK."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports and export",
+      "item": [
+        {
+          "name": "Low attendance students",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/low-attendance?threshold=75",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "low-attendance"
+              ],
+              "query": [
+                {
+                  "key": "threshold",
+                  "value": "75"
+                }
+              ]
+            },
+            "description": "200 OK. Array of {studentDbId, studentCode, name, departmentCode, totalClasses, presentClasses, percentage}, lowest first."
+          }
+        },
+        {
+          "name": "Top performers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/top-performers?limit=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "top-performers"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "200 OK. Ranked by average total marks."
+          }
+        },
+        {
+          "name": "Student report card",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/student/1/report-card",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "student",
+                "1",
+                "report-card"
+              ]
+            },
+            "description": "200 OK. Courses, total credits, cgpa (credit-weighted) and overall attendance."
+          }
+        },
+        {
+          "name": "Export students CSV",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/export/students.csv",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "export",
+                "students.csv"
+              ]
+            },
+            "description": "200 OK. Downloads a CSV file. Also /api/export/attendance.csv and /api/export/marks.csv."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get dashboard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard"
+              ]
+            },
+            "description": "200 OK. Totals, average attendance, lowAttendanceCount, chart data (studentsByDepartment, attendanceByCourse, gradeDistribution) and the 5 most recent students."
+          }
+        }
+      ]
+    }
+  ]
+}
